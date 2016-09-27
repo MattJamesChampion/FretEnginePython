@@ -18,6 +18,12 @@ class AbstractNote(Enum):
     asharp_bflat = 10
     bnatural_cflat = 11
 
+    def __add__(self, other):
+        return AbstractNote((self.value + other) % len(AbstractNote))
+
+    def __sub__(self, other):
+        return AbstractNote((self.value - other) % len(AbstractNote))
+
 
 def parse_note_string(note_string):
     pattern = r"^([A-G])[ ]?(natural|sharp|#|flat|b)?$"

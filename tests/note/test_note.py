@@ -34,6 +34,33 @@ class TestAbstractNote(unittest.TestCase):
             with self.subTest(invalid_input=invalid_input):
                 self.assertRaises(ValueError, AbstractNote, invalid_input)
 
+    def test_addition_returns_correct_result(self):
+        argument_result_triples = (
+            ((AbstractNote.bnatural_cflat, 2), AbstractNote.csharp_dflat),
+            ((AbstractNote.bsharp_cnatural, 5), AbstractNote.esharp_fnatural),
+            ((AbstractNote.enatural_fflat, 9), AbstractNote.csharp_dflat),
+            ((AbstractNote.anatural, 299), AbstractNote.gsharp_aflat),
+            ((AbstractNote.anatural, -2), AbstractNote.gnatural)
+        )
+
+        for (note, modifier), intended_result in argument_result_triples:
+            with self.subTest(arguments=((note, modifier), intended_result)):
+                actual_result = note + modifier
+                self.assertEqual(actual_result, intended_result)
+
+    def test_subtraction_returns_correct_result(self):
+        argument_result_triples = (
+            ((AbstractNote.bsharp_cnatural, 4), AbstractNote.gsharp_aflat),
+            ((AbstractNote.enatural_fflat, 9), AbstractNote.gnatural),
+            ((AbstractNote.dnatural, 299), AbstractNote.dsharp_eflat),
+            ((AbstractNote.fsharp_gflat, -2), AbstractNote.gsharp_aflat)
+        )
+
+        for (note, modifier), intended_result in argument_result_triples:
+            with self.subTest(argument=((note, modifier), intended_result)):
+                actual_result = note - modifier
+                self.assertEqual(actual_result, intended_result)
+
 
 class TestParseNoteStringFunction(unittest.TestCase):
     def test_does_not_throw_exception_with_valid_input(self):
