@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 
 DEFAULT_NOTE_SHIFT_VALUE = "natural"
 
@@ -16,6 +17,28 @@ class AbstractNote(Enum):
     anatural = 9
     asharp_bflat = 10
     bnatural_cflat = 11
+
+
+def parse_note_string(note_string):
+    pattern = r"^([A-G])[ ]?(natural|sharp|#|flat|b)?$"
+
+    result = re.match(pattern, note_string, re.IGNORECASE)
+
+    if result:
+        note_letter, note_shift = result.groups()
+
+        if note_shift is None:
+            note_shift = DEFAULT_NOTE_SHIFT_VALUE
+        else:
+            note_shift = parse_note_shift(note_shift)
+        try:
+            return note_letter.lower(), note_shift.lower()
+        except AttributeError:
+            raise TypeError("note_string ({}) is an invalid "
+                            "type".format(note_string))
+    else:
+        raise ValueError("note_string ({}) could not "
+                         "be parsed".format(note_string))
 
 
 def parse_note_shift(note_shift):
