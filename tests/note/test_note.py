@@ -62,7 +62,7 @@ class TestAbstractNote(unittest.TestCase):
                 self.assertEqual(actual_result, intended_result)
 
 
-class TestParseNoteStringFunction(unittest.TestCase):
+class TestParseNoteString(unittest.TestCase):
     def test_does_not_throw_exception_with_valid_input(self):
         note_strings = (
             "C natural",
