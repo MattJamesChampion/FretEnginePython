@@ -1,5 +1,7 @@
 import unittest
-from note.note import AbstractNote, convert_note_to_abstract
+from note.note import AbstractNote, convert_note_to_abstract, parse_note_shift
+
+BASIC_CHECK_NUMBERS = (-1, 0, 1, 100)
 
 
 class TestAbstractNote(unittest.TestCase):
@@ -30,6 +32,61 @@ class TestAbstractNote(unittest.TestCase):
         for invalid_input in invalid_inputs:
             with self.subTest(invalid_input=invalid_input):
                 self.assertRaises(ValueError, AbstractNote, invalid_input)
+
+
+class TestParseNoteShift(unittest.TestCase):
+    def test_does_not_throw_exception_with_valid_input(self):
+        note_shift_strings = (
+            "#",
+            "b",
+            "flat",
+            "FLAT",
+            "fLaT",
+            "NATURAL",
+            "ShArP"
+        )
+
+        for note_shift_string in note_shift_strings:
+            with self.subTest(note_shift_string=note_shift_string):
+                try:
+                    parse_note_shift(note_shift_string)
+                except Exception:
+                    self.fail("parse_note_shift failed with a valid string")
+
+    def test_returns_correct_result_on_valid_input(self):
+        argument_result_pairs = (
+            ("#", "sharp"),
+            ("b", "flat"),
+            ("flat", "flat"),
+            ("FLAT", "flat"),
+            ("fLaT", "flat"),
+            ("NATURAL", "natural"),
+            ("ShArP", "sharp")
+        )
+
+        for argument_result_pair in argument_result_pairs:
+            argument, intended_result = argument_result_pair
+            with self.subTest(argument_result_pair=argument_result_pair):
+                actual_result = parse_note_shift(argument)
+                self.assertEqual(actual_result, intended_result)
+
+    def test_raises_exception_with_invalid_input_value(self):
+        invalid_inputs = (
+            "Test",
+            "flt",
+            "SHRP"
+        )
+
+        for invalid_input in invalid_inputs:
+            with self.subTest(invalid_input=invalid_input):
+                self.assertRaises(ValueError, parse_note_shift, invalid_input)
+
+    def test_raises_exception_with_invalid_input_type(self):
+        invalid_inputs = BASIC_CHECK_NUMBERS
+
+        for invalid_input in invalid_inputs:
+            with self.subTest(invalid_input=invalid_input):
+                self.assertRaises(TypeError, parse_note_shift, invalid_input)
 
 
 class TestConvertNoteToAbstract(unittest.TestCase):
@@ -79,12 +136,7 @@ class TestConvertNoteToAbstract(unittest.TestCase):
                                   *invalid_input)
 
     def test_raises_exception_with_invalid_input_type(self):
-        invalid_inputs = (
-            -1,
-            0,
-            1,
-            100
-        )
+        invalid_inputs = BASIC_CHECK_NUMBERS
 
         for invalid_input in invalid_inputs:
             with self.subTest(invalid_input=invalid_input):

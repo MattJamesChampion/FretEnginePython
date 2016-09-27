@@ -18,6 +18,25 @@ class AbstractNote(Enum):
     bnatural_cflat = 11
 
 
+def parse_note_shift(note_shift):
+    note_shift_translation_dict = {
+        "natural": "natural",
+        "sharp": "sharp",
+        "#": "sharp",
+        "flat": "flat",
+        "b": "flat",
+    }
+
+    try:
+        return note_shift_translation_dict[note_shift.lower()]
+    except AttributeError:
+        raise TypeError("note_shift ({}) is an "
+                        "invalid type".format(note_shift))
+    except KeyError:
+        raise ValueError("note_shift ({}) does not match with a "
+                         "valid note shift".format(note_shift))
+
+
 def convert_note_to_abstract(note_letter, note_shift=DEFAULT_NOTE_SHIFT_VALUE):
     note_translation_dict = {
         ("b", "sharp"): AbstractNote.bsharp_cnatural,
