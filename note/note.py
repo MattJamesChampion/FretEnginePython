@@ -5,6 +5,8 @@ import re
 
 DEFAULT_NOTE_SHIFT_VALUE = "natural"
 """Default value intended for use when note shift is not specified."""
+DEFAULT_NOTE_OCTAVE_VALUE = 4
+"""Default value intended for use when note octave is not specified."""
 
 
 class AbstractNote(Enum):
@@ -14,6 +16,14 @@ class AbstractNote(Enum):
     fact that, for example, "C Sharp" and "D Flat" are the same note), this is
     a highly abstracted and simplified representation of the notes in the
     English chromatic scale.
+
+    This starts on C rather than A simply because C is the "first" note in
+    scientific pitch notation. As an example, going down a semitone from C4
+    (middle C) takes you to B3, meaning that it is on the third octave rather
+    than the fourth. Since other classes that build on AbstractNote may deal
+    with octaves, it makes sense to make it as easy as possible to process an
+    octave change (which would simply require checking whether the processing
+    has wrapped over the top or under the bottom of the Enum).
     """
 
     bsharp_cnatural = 0
@@ -53,25 +63,90 @@ class Note:
     This class builds upon the basic structure of the AbstractNote class and
     is intended to provide additional logic and state to better represent a
     note.
-
-    TODO:
-        Add more logic to Note
-        Check how state is stored
-        Add octave state
     """
 
-    def __init__(self, note_letter, note_shift=DEFAULT_NOTE_SHIFT_VALUE):
+    def __init__(self,
+                 note_letter,
+                 note_shift=DEFAULT_NOTE_SHIFT_VALUE,
+                 note_octave=DEFAULT_NOTE_OCTAVE_VALUE):
         """Create an instance of Note.
 
         Args:
             note_letter (str): The note letter to create Note with
             note_shift (str, optional): The note shift to create Note with
+            note_octave (int, optional): The octave of the note
+        Raises:
+            ValueError: If note_octave cannot be cast as an int
         """
-        self._note = convert_note_to_abstract(note_letter, note_shift)
+        self.set_note(note_letter, note_shift)
+        self.note_octave = note_octave
 
     def __str__(self):
         """Return the string representation of Note."""
-        return self._note.name
+        return self.note.name + str(self.note_octave)
+
+    @property
+    def note(self):
+        """Return the stored note."""
+        return self._note
+
+    def set_note(self, note_letter, note_shift=DEFAULT_NOTE_SHIFT_VALUE):
+        """Set the stored note.
+
+        Takes two values (note_letter and note_shift), converts them into an
+        AbstractNote and stores the result.
+
+        This also stores the note_letter and note_shift values internally in
+        case they have any further use.
+
+        The reason that this function is not used as a setter for the "note"
+        property is that setters can only take in one value cleanly; in theory
+        a tuple or other such construct could be used to package the values on
+        one side and then unpack them once passed, but that only serves to
+        complicate the contract by requiring users to package their values
+        first.
+
+        Args:
+            note_letter (str): The note letter to update the Note with
+            note_shift (str, optional): The note shift to update the Note with
+
+        """
+        self._note_letter = note_letter
+        self._note_shift = note_shift
+        self._note = convert_note_to_abstract(note_letter, note_shift)
+
+    @property
+    def note_octave(self):
+        """Return the stored note's octave."""
+        return self._note_octave
+
+    @note_octave.setter
+    def note_octave(self, input_note_octave=DEFAULT_NOTE_OCTAVE_VALUE):
+        """Set the stored note's octave.
+
+        Args:
+            input_note_octave (str, optional): The note octave to update the
+                Note with
+
+        Raises:
+            ValueError: If input_note_octave cannot be cast as an int
+        """
+        try:
+            input_note_octave = int(input_note_octave)
+        except ValueError:
+            # The reason that this exception is caught and then immediately
+            # re-raised is because the contract of this function dictates that
+            # ValueError can be raised depending on the arguments used. As
+            # such, it seemed wise to make the fact that casting as an int can
+            # throw a ValueError explicit so that the location/cause of the
+            # potential exception is clear.
+            raise
+
+        if 0 <= input_note_octave <= 10:
+            self._note_octave = input_note_octave
+        else:
+            raise ValueError("input_note_octave ({}) must be between 0 and "
+                             "10".format(input_note_octave))
 
 
 def parse_note_string(note_string):
@@ -103,7 +178,7 @@ def parse_note_string(note_string):
         ValueError: If the regex does not successfully parse note_string
         TypeError: If note_string does not have a valid .lower() method
 
-    Todo:
+    TODO:
         Add support for actual unicode natural, sharp and flat symbols
     """
     pattern = r"^([A-G])[ ]?(natural|sharp|#|flat|b)?$"

@@ -1,8 +1,14 @@
 import unittest
-from note.note import (AbstractNote, convert_note_to_abstract, Note,
-                       parse_note_shift, parse_note_string)
+from note.note import (AbstractNote,
+                       convert_note_to_abstract,
+                       DEFAULT_NOTE_OCTAVE_VALUE,
+                       DEFAULT_NOTE_SHIFT_VALUE,
+                       Note,
+                       parse_note_shift,
+                       parse_note_string)
 
 BASIC_CHECK_NUMBERS = (-1, 0, 1, 100)
+BASIC_CHECK_STRINGS = ("test", "ABCDEFG", ".?!", " ", "")
 
 
 class TestAbstractNote(unittest.TestCase):
@@ -63,12 +69,37 @@ class TestAbstractNote(unittest.TestCase):
 
 
 class TestNote(unittest.TestCase):
+    valid_note_octaves = (
+        0,
+        1,
+        4,
+        10,
+        "5",
+        "7"
+    )
+
+    invalid_note_octave_values = (
+        -1,
+        11,
+        100
+    )
+
+    invalid_note_octave_types = (
+        [10],
+        (5,)
+    )
+
     def setUp(self):
         self.note_letter = "C"
         self.note_shift = "Natural"
+        self.note_octave = 4
 
     def test_init_does_not_throw_exception_with_valid_note(self):
-        note_pairs = (
+        note_argument_tuples = (
+            ("F", "flat", 0),
+            ("G", "SHARP", 9),
+            ("A", "FlAt", 5),
+            ("B", "shaRP", 7),
             ("C", "Natural"),
             ("D", "NATURAL"),
             ("e", "natural"),
@@ -79,13 +110,49 @@ class TestNote(unittest.TestCase):
             ("C"),
         )
 
-        for note_pair in note_pairs:
-            with self.subTest(note_pair=note_pair):
+        for note_argument_tuple in note_argument_tuples:
+            with self.subTest(note_argument_tuple=note_argument_tuple):
                 try:
-                    Note(*note_pair)
+                    Note(*note_argument_tuple)
                 except Exception:
                     self.fail("Note init threw an exception with "
                               "valid arguments")
+
+    def test_init_sets_values_correctly_with_valid_values(self):
+        note_argument_result_tuples = (
+            (("F", "flat", 0), (AbstractNote.enatural_fflat,
+                                0)),
+            (("G", "SHARP", 9), (AbstractNote.gsharp_aflat,
+                                 9)),
+            (("A", "FlAt", 5), (AbstractNote.gsharp_aflat,
+                                5)),
+            (("B", "shaRP", 7), (AbstractNote.bsharp_cnatural,
+                                 7)),
+            (("C", "Natural"), (AbstractNote.bsharp_cnatural,
+                                DEFAULT_NOTE_OCTAVE_VALUE)),
+            (("D", "NATURAL"), (AbstractNote.dnatural,
+                                DEFAULT_NOTE_OCTAVE_VALUE)),
+            (("e", "natural"), (AbstractNote.enatural_fflat,
+                                DEFAULT_NOTE_OCTAVE_VALUE)),
+            (("f", "nAtUrAl"), (AbstractNote.esharp_fnatural,
+                                DEFAULT_NOTE_OCTAVE_VALUE)),
+            (("G", "flat"), (AbstractNote.fsharp_gflat,
+                             DEFAULT_NOTE_OCTAVE_VALUE)),
+            (("a", "SHARP"), (AbstractNote.asharp_bflat,
+                              DEFAULT_NOTE_OCTAVE_VALUE)),
+            (("b"), (AbstractNote.bnatural_cflat,
+                     DEFAULT_NOTE_OCTAVE_VALUE)),
+            (("C"), (AbstractNote.bsharp_cnatural,
+                     DEFAULT_NOTE_OCTAVE_VALUE))
+        )
+
+        for note_argument_result_tuple in note_argument_result_tuples:
+            arguments, results = note_argument_result_tuple
+            with self.subTest(args=(arguments, results)):
+                test_note = Note(*arguments)
+
+                self.assertEqual(test_note.note, results[0])
+                self.assertEqual(test_note.note_octave, results[1])
 
     def test_init_raises_exception_with_invalid_note_letter_value(self):
         invalid_note_letters = (
@@ -101,7 +168,8 @@ class TestNote(unittest.TestCase):
                 self.assertRaises(ValueError,
                                   Note,
                                   invalid_note_letter,
-                                  self.note_shift)
+                                  self.note_shift,
+                                  self.note_octave)
 
     def test_init_raises_exception_with_invalid_note_letter_type(self):
         invalid_note_letters = BASIC_CHECK_NUMBERS
@@ -111,23 +179,19 @@ class TestNote(unittest.TestCase):
                 self.assertRaises(TypeError,
                                   Note,
                                   invalid_note_letter,
-                                  self.note_shift)
+                                  self.note_shift,
+                                  self.note_octave)
 
     def test_init_raises_exception_with_invalid_note_shift_value(self):
-        invalid_note_shifts = (
-            "test",
-            "ABCDEFG",
-            ".?!",
-            " ",
-            ""
-        )
+        invalid_note_shifts = BASIC_CHECK_STRINGS
 
         for invalid_note_shift in invalid_note_shifts:
             with self.subTest(invalid_note_shift=invalid_note_shift):
                 self.assertRaises(ValueError,
                                   Note,
                                   self.note_letter,
-                                  invalid_note_shift)
+                                  invalid_note_shift,
+                                  self.note_octave)
 
     def test_init_raises_exception_with_invalid_note_shift_type(self):
         invalid_note_shifts = BASIC_CHECK_NUMBERS
@@ -137,7 +201,67 @@ class TestNote(unittest.TestCase):
                 self.assertRaises(TypeError,
                                   Note,
                                   self.note_letter,
-                                  invalid_note_shift)
+                                  invalid_note_shift,
+                                  self.note_octave)
+
+    def test_init_raises_exception_with_invalid_note_octave_value(self):
+        invalid_note_octaves = self.invalid_note_octave_values
+
+        for invalid_note_octave in invalid_note_octaves:
+            with self.subTest(invalid_note_octave=invalid_note_octave):
+                self.assertRaises(ValueError,
+                                  Note,
+                                  self.note_letter,
+                                  self.note_shift,
+                                  invalid_note_octave)
+
+    def test_init_raises_exception_with_invalid_note_octave_type(self):
+        invalid_note_octaves = self.invalid_note_octave_types
+
+        for invalid_note_octave in invalid_note_octaves:
+            with self.subTest(invalid_note_octave=invalid_note_octave):
+                self.assertRaises(TypeError,
+                                  Note,
+                                  self.note_letter,
+                                  self.note_shift,
+                                  invalid_note_octave)
+
+    def test_note_octave_updates_correctly(self):
+        valid_note_octaves = self.valid_note_octaves
+
+        for valid_note_octave in valid_note_octaves:
+            with self.subTest(valid_note_octave=valid_note_octave):
+                test_note = Note(self.note_letter,
+                                 self.note_shift,
+                                 self.note_octave)
+
+                test_note.note_octave = valid_note_octave
+
+                self.assertEqual(test_note.note_octave, int(valid_note_octave))
+
+    def test_note_octave_update_raises_exception_with_invalid_value(self):
+        invalid_note_octaves = self.invalid_note_octave_values
+
+        for invalid_note_octave in invalid_note_octaves:
+            with self.subTest(invalid_note_octave=invalid_note_octave):
+                test_note = Note(self.note_letter,
+                                 self.note_shift,
+                                 DEFAULT_NOTE_OCTAVE_VALUE)
+
+                with self.assertRaises(ValueError):
+                    test_note.note_octave = invalid_note_octave
+
+    def test_note_octave_update_raises_exception_with_invalid_type(self):
+        invalid_note_octaves = self.invalid_note_octave_types
+
+        for invalid_note_octave in invalid_note_octaves:
+            with self.subTest(invalid_note_octave=invalid_note_octave):
+                test_note = Note(self.note_letter,
+                                 self.note_shift,
+                                 DEFAULT_NOTE_OCTAVE_VALUE)
+
+                with self.assertRaises(TypeError):
+                    test_note.note_octave = invalid_note_octave
 
 
 class TestParseNoteString(unittest.TestCase):
