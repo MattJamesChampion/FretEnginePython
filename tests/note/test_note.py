@@ -1,5 +1,5 @@
 import unittest
-from note.note import (AbstractNote, convert_note_to_abstract,
+from note.note import (AbstractNote, convert_note_to_abstract, Note,
                        parse_note_shift, parse_note_string)
 
 BASIC_CHECK_NUMBERS = (-1, 0, 1, 100)
@@ -60,6 +60,84 @@ class TestAbstractNote(unittest.TestCase):
             with self.subTest(argument=((note, modifier), intended_result)):
                 actual_result = note - modifier
                 self.assertEqual(actual_result, intended_result)
+
+
+class TestNote(unittest.TestCase):
+    def setUp(self):
+        self.note_letter = "C"
+        self.note_shift = "Natural"
+
+    def test_init_does_not_throw_exception_with_valid_note(self):
+        note_pairs = (
+            ("C", "Natural"),
+            ("D", "NATURAL"),
+            ("e", "natural"),
+            ("f", "nAtUrAl"),
+            ("G", "flat"),
+            ("a", "SHARP"),
+            ("b"),
+            ("C"),
+        )
+
+        for note_pair in note_pairs:
+            with self.subTest(note_pair=note_pair):
+                try:
+                    Note(*note_pair)
+                except Exception:
+                    self.fail("Note init threw an exception with "
+                              "valid arguments")
+
+    def test_init_raises_exception_with_invalid_note_letter_value(self):
+        invalid_note_letters = (
+            "H",
+            "z",
+            ".?!",
+            " ",
+            ""
+        )
+
+        for invalid_note_letter in invalid_note_letters:
+            with self.subTest(invalid_note_letter=invalid_note_letter):
+                self.assertRaises(ValueError,
+                                  Note,
+                                  invalid_note_letter,
+                                  self.note_shift)
+
+    def test_init_raises_exception_with_invalid_note_letter_type(self):
+        invalid_note_letters = BASIC_CHECK_NUMBERS
+
+        for invalid_note_letter in invalid_note_letters:
+            with self.subTest(invalid_note_letter=invalid_note_letter):
+                self.assertRaises(TypeError,
+                                  Note,
+                                  invalid_note_letter,
+                                  self.note_shift)
+
+    def test_init_raises_exception_with_invalid_note_shift_value(self):
+        invalid_note_shifts = (
+            "test",
+            "ABCDEFG",
+            ".?!",
+            " ",
+            ""
+        )
+
+        for invalid_note_shift in invalid_note_shifts:
+            with self.subTest(invalid_note_shift=invalid_note_shift):
+                self.assertRaises(ValueError,
+                                  Note,
+                                  self.note_letter,
+                                  invalid_note_shift)
+
+    def test_init_raises_exception_with_invalid_note_shift_type(self):
+        invalid_note_shifts = BASIC_CHECK_NUMBERS
+
+        for invalid_note_shift in invalid_note_shifts:
+            with self.subTest(invalid_note_shift=invalid_note_shift):
+                self.assertRaises(TypeError,
+                                  Note,
+                                  self.note_letter,
+                                  invalid_note_shift)
 
 
 class TestParseNoteString(unittest.TestCase):

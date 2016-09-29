@@ -25,6 +25,14 @@ class AbstractNote(Enum):
         return AbstractNote((self.value - other) % len(AbstractNote))
 
 
+class Note:
+    def __init__(self, note_letter, note_shift=DEFAULT_NOTE_SHIFT_VALUE):
+        self._note = convert_note_to_abstract(note_letter, note_shift)
+
+    def __str__(self):
+        return self._note.name
+
+
 def parse_note_string(note_string):
     pattern = r"^([A-G])[ ]?(natural|sharp|#|flat|b)?$"
 
