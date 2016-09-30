@@ -74,9 +74,7 @@ class Note:
         Args:
             note_letter (str): The note letter to create Note with
             note_shift (str, optional): The note shift to create Note with
-            note_octave (int, optional): The octave of the note
-        Raises:
-            ValueError: If note_octave cannot be cast as an int
+            note_octave (int, optional): The octave to create the note with
         """
         self.set_note(note_letter, note_shift)
         self.note_octave = note_octave
@@ -107,9 +105,8 @@ class Note:
         first.
 
         Args:
-            note_letter (str): The note letter to update the Note with
-            note_shift (str, optional): The note shift to update the Note with
-
+            note_letter (str): The note letter to set the Note with
+            note_shift (str, optional): The note shift to set the Note with
         """
         self._note_letter = note_letter
         self._note_shift = note_shift
