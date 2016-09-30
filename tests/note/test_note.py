@@ -38,7 +38,8 @@ class TestAbstractNote(unittest.TestCase):
 
         for invalid_input in invalid_inputs:
             with self.subTest(invalid_input=invalid_input):
-                self.assertRaises(ValueError, AbstractNote, invalid_input)
+                with self.assertRaises(ValueError):
+                    AbstractNote(invalid_input)
 
     def test_addition_returns_correct_result(self):
         argument_result_triples = (
@@ -165,66 +166,60 @@ class TestNote(unittest.TestCase):
 
         for invalid_note_letter in invalid_note_letters:
             with self.subTest(invalid_note_letter=invalid_note_letter):
-                self.assertRaises(ValueError,
-                                  Note,
-                                  invalid_note_letter,
-                                  self.note_shift,
-                                  self.note_octave)
+                with self.assertRaises(ValueError):
+                    Note(invalid_note_letter,
+                         self.note_shift,
+                         self.note_octave)
 
     def test_init_raises_exception_with_invalid_note_letter_type(self):
         invalid_note_letters = BASIC_CHECK_NUMBERS
 
         for invalid_note_letter in invalid_note_letters:
             with self.subTest(invalid_note_letter=invalid_note_letter):
-                self.assertRaises(TypeError,
-                                  Note,
-                                  invalid_note_letter,
-                                  self.note_shift,
-                                  self.note_octave)
+                with self.assertRaises(TypeError):
+                    Note(invalid_note_letter,
+                         self.note_shift,
+                         self.note_octave)
 
     def test_init_raises_exception_with_invalid_note_shift_value(self):
         invalid_note_shifts = BASIC_CHECK_STRINGS
 
         for invalid_note_shift in invalid_note_shifts:
             with self.subTest(invalid_note_shift=invalid_note_shift):
-                self.assertRaises(ValueError,
-                                  Note,
-                                  self.note_letter,
-                                  invalid_note_shift,
-                                  self.note_octave)
+                with self.assertRaises(ValueError):
+                    Note(self.note_letter,
+                         invalid_note_shift,
+                         self.note_octave)
 
     def test_init_raises_exception_with_invalid_note_shift_type(self):
         invalid_note_shifts = BASIC_CHECK_NUMBERS
 
         for invalid_note_shift in invalid_note_shifts:
             with self.subTest(invalid_note_shift=invalid_note_shift):
-                self.assertRaises(TypeError,
-                                  Note,
-                                  self.note_letter,
-                                  invalid_note_shift,
-                                  self.note_octave)
+                with self.assertRaises(TypeError):
+                    Note(self.note_letter,
+                         invalid_note_shift,
+                         self.note_octave)
 
     def test_init_raises_exception_with_invalid_note_octave_value(self):
         invalid_note_octaves = self.invalid_note_octave_values
 
         for invalid_note_octave in invalid_note_octaves:
             with self.subTest(invalid_note_octave=invalid_note_octave):
-                self.assertRaises(ValueError,
-                                  Note,
-                                  self.note_letter,
-                                  self.note_shift,
-                                  invalid_note_octave)
+                with self.assertRaises(ValueError):
+                    Note(self.note_letter,
+                         self.note_shift,
+                         invalid_note_octave)
 
     def test_init_raises_exception_with_invalid_note_octave_type(self):
         invalid_note_octaves = self.invalid_note_octave_types
 
         for invalid_note_octave in invalid_note_octaves:
             with self.subTest(invalid_note_octave=invalid_note_octave):
-                self.assertRaises(TypeError,
-                                  Note,
-                                  self.note_letter,
-                                  self.note_shift,
-                                  invalid_note_octave)
+                with self.assertRaises(TypeError):
+                    Note(self.note_letter,
+                         self.note_shift,
+                         invalid_note_octave)
 
     def test_note_octave_updates_correctly(self):
         valid_note_octaves = self.valid_note_octaves
@@ -313,18 +308,16 @@ class TestParseNoteString(unittest.TestCase):
 
         for invalid_note_string in invalid_note_strings:
             with self.subTest(invalid_note_string=invalid_note_string):
-                self.assertRaises(ValueError,
-                                  parse_note_string,
-                                  invalid_note_string)
+                with self.assertRaises(ValueError):
+                    parse_note_string(invalid_note_string)
 
     def test_raises_exception_with_invalid_note_string_type(self):
         invalid_note_strings = BASIC_CHECK_NUMBERS
 
         for invalid_note_string in invalid_note_strings:
             with self.subTest(invalid_note_string=invalid_note_string):
-                self.assertRaises(TypeError,
-                                  parse_note_string,
-                                  invalid_note_strings)
+                with self.assertRaises(TypeError):
+                    parse_note_string(invalid_note_strings)
 
 
 class TestParseNoteShift(unittest.TestCase):
@@ -372,14 +365,16 @@ class TestParseNoteShift(unittest.TestCase):
 
         for invalid_input in invalid_inputs:
             with self.subTest(invalid_input=invalid_input):
-                self.assertRaises(ValueError, parse_note_shift, invalid_input)
+                with self.assertRaises(ValueError):
+                    parse_note_shift(invalid_input)
 
     def test_raises_exception_with_invalid_input_type(self):
         invalid_inputs = BASIC_CHECK_NUMBERS
 
         for invalid_input in invalid_inputs:
             with self.subTest(invalid_input=invalid_input):
-                self.assertRaises(TypeError, parse_note_shift, invalid_input)
+                with self.assertRaises(TypeError):
+                    parse_note_shift(invalid_input)
 
 
 class TestConvertNoteToAbstract(unittest.TestCase):
@@ -424,15 +419,13 @@ class TestConvertNoteToAbstract(unittest.TestCase):
 
         for invalid_input in invalid_inputs:
             with self.subTest(invalid_input=invalid_input):
-                self.assertRaises(ValueError,
-                                  convert_note_to_abstract,
-                                  *invalid_input)
+                with self.assertRaises(ValueError):
+                    convert_note_to_abstract(*invalid_input)
 
     def test_raises_exception_with_invalid_input_type(self):
         invalid_inputs = BASIC_CHECK_NUMBERS
 
         for invalid_input in invalid_inputs:
             with self.subTest(invalid_input=invalid_input):
-                self.assertRaises(TypeError,
-                                  convert_note_to_abstract,
-                                  invalid_input)
+                with self.assertRaises(TypeError):
+                    convert_note_to_abstract(invalid_input)
