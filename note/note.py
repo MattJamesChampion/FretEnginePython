@@ -157,7 +157,10 @@ def parse_note_string(note_string):
     This function is designed to work cooperatively with the function
     convert_note_to_abstract, which requires specific values to work correctly.
     As such, this function is able to take an unrefined input string and
-    prepare it in such a way that it is valid for convert_note_to_abstract.
+    prepare it in such a way that it is valid for convert_note_to_abstract. For
+    this to work properly however, the result of parse_note_string (which is a
+    tuple) must be unpacked before being passed over to
+    convert_note_to_abstract (using the asterisk syntax).
 
     Due to the fact that re.IGNORECASE is used, values that use an uppercase
     flat symbol ("B" instead of "b") are accepted. This is an unintended side
