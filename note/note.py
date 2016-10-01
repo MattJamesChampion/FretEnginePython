@@ -202,6 +202,81 @@ def parse_note_string(note_string):
                          "be parsed".format(note_string))
 
 
+def is_note_letter_valid(input_note_letter):
+    """Check that input_note_letter is a valid note letter.
+
+    Args:
+        input_note_letter (str): The note letter that is being checked
+
+    Returns:
+        bool: Whether input_note_letter is a valid note letter or not
+
+    Raises:
+        TypeError: If input_note_letter is an invalid type
+    """
+    lower_bound = "a"
+    upper_bound = "g"
+
+    character_range = range(ord(lower_bound), ord(upper_bound) + 1)
+
+    valid_note_letters = [chr(letter) for letter in character_range]
+
+    try:
+        return input_note_letter.lower() in valid_note_letters
+    except AttributeError:
+        raise TypeError("input_note_letter ({}) is an invalid "
+                        "type".format(input_note_letter))
+
+
+def is_note_shift_valid(input_note_shift):
+    """Check that input_note_shift is a valid note shift.
+
+    Args:
+        input_note_shift (str): The note shift that is being checked
+
+    Returns:
+        bool: Whether input_note_shift is a valid note shift or not
+
+    Raises:
+        TypeError: If input_note_shift is an invalid type
+    """
+    valid_note_shifts = (
+        "flat",
+        "natural",
+        "sharp",
+        "#",
+        "b"
+    )
+
+    try:
+        return input_note_shift.lower() in valid_note_shifts
+    except AttributeError:
+        raise TypeError("input_note_shift ({}) is an invalid "
+                        "type".format(input_note_shift))
+
+
+def is_note_octave_valid(input_note_octave):
+    """Check that input_note_octave is a valid note_octave.
+
+    Args:
+        input_note_octave (int): The note octave that is being checked
+
+    Returns:
+        bool: Whether input_note_octave is a valid note octave or not
+
+    Raises:
+        TypeError: If input_note_octave is an invalid type
+    """
+    octave_lower_bound = 0
+    octave_upper_bound = 10
+
+    try:
+        return octave_lower_bound <= input_note_octave <= octave_upper_bound
+    except TypeError:
+        raise TypeError("input_note_octave ({}) must be an "
+                        "integer".format(input_note_octave))
+
+
 def parse_note_shift(note_shift):
     """Parse a note shift and return a refined value representing the shift.
 

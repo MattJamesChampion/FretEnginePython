@@ -3,6 +3,9 @@ from note.note import (AbstractNote,
                        convert_note_to_abstract,
                        DEFAULT_NOTE_OCTAVE_VALUE,
                        DEFAULT_NOTE_SHIFT_VALUE,
+                       is_note_letter_valid,
+                       is_note_shift_valid,
+                       is_note_octave_valid,
                        Note,
                        parse_note_shift,
                        parse_note_string)
@@ -257,6 +260,130 @@ class TestNote(unittest.TestCase):
 
                 with self.assertRaises(TypeError):
                     test_note.note_octave = invalid_note_octave
+
+
+class TestIsNoteLetterValid(unittest.TestCase):
+    valid_note_letters = (
+        "A",
+        "b",
+        "D",
+        "g",
+    )
+
+    invalid_note_letters = (
+        "h",
+        "Q",
+        "z",
+        "."
+    )
+
+    invalid_note_letter_types = (
+        ["A"],
+        (7),
+        1
+    )
+
+    def test_returns_true_for_valid_note_letter(self):
+        valid_note_letters = self.valid_note_letters
+
+        for valid_note_letter in valid_note_letters:
+            with self.subTest(valid_note_letter=valid_note_letter):
+                self.assertTrue(is_note_letter_valid(valid_note_letter))
+
+    def test_returns_false_for_invalid_note_letter(self):
+        invalid_note_letters = self.invalid_note_letters
+
+        for invalid_note_letter in invalid_note_letters:
+            with self.subTest(invalid_note_letter=invalid_note_letter):
+                self.assertFalse(is_note_letter_valid(invalid_note_letter))
+
+    def test_raises_exception_with_invalid_note_letter_type(self):
+        invalid_note_letters = self.invalid_note_letter_types
+
+        for invalid_note_letter in invalid_note_letters:
+            with self.subTest(invalid_note_letter=invalid_note_letter):
+                with self.assertRaises(TypeError):
+                    is_note_letter_valid(invalid_note_letter)
+
+
+class TestIsNoteShiftValid(unittest.TestCase):
+    valid_note_shifts = (
+        "sharp",
+        "NATURAL",
+        "FlAt",
+        "b",
+        "#"
+    )
+
+    invalid_note_shifts = (
+        "shrp",
+        "test",
+        "##",
+        "bb",
+        "FLAT!"
+    )
+
+    invalid_note_shift_types = (
+        ["sharp"],
+        (17,),
+        2
+    )
+
+    def test_returns_true_for_valid_note_shift(self):
+        for valid_note_shift in self.valid_note_shifts:
+            with self.subTest(valid_note_shift=valid_note_shift):
+                self.assertTrue(is_note_shift_valid(valid_note_shift))
+
+    def test_returns_false_for_invalid_note_shift(self):
+        for invalid_note_shift in self.invalid_note_shifts:
+            with self.subTest(invalid_note_shift=invalid_note_shift):
+                self.assertFalse(is_note_shift_valid(invalid_note_shift))
+
+    def test_raises_exception_with_invalid_note_shift_type(self):
+        for invalid_note_shift in self.invalid_note_shift_types:
+            with self.subTest(invalid_note_shift=invalid_note_shift):
+                with self.assertRaises(TypeError):
+                    is_note_shift_valid(invalid_note_shift)
+
+
+class TestIsNoteOctaveValid(unittest.TestCase):
+    valid_note_octaves = (
+        0,
+        3,
+        5,
+        7,
+        10
+    )
+
+    invalid_note_octaves = (
+        -100,
+        -1,
+        11,
+        100
+    )
+
+    invalid_note_octave_types = (
+        [3],
+        (7,),
+        "A",
+        "z"
+    )
+
+    def test_returns_true_for_valid_note_octave(self):
+        for valid_note_octave in self.valid_note_octaves:
+            with self.subTest(valid_note_octave=valid_note_octave):
+                self.assertTrue(is_note_octave_valid(valid_note_octave))
+
+    def test_returns_false_for_invalid_note_octave(self):
+        for invalid_note_octave in self.invalid_note_octaves:
+            with self.subTest(invalid_note_octave=invalid_note_octave):
+                self.assertFalse(is_note_octave_valid(invalid_note_octave))
+
+    def test_raises_exception_for_invalid_note_octave_type(self):
+        for invalid_note_octave in self.invalid_note_octave_types:
+            with self.subTest(invalid_note_octave=invalid_note_octave):
+                with self.assertRaises(TypeError):
+                    is_note_octave_valid(invalid_note_octave)
 
 
 class TestParseNoteString(unittest.TestCase):
