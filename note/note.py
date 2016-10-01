@@ -118,12 +118,12 @@ class Note:
         return self._note_octave
 
     @note_octave.setter
-    def note_octave(self, input_note_octave=DEFAULT_NOTE_OCTAVE_VALUE):
+    def note_octave(self, input_note_octave):
         """Set the stored note's octave.
 
         Args:
-            input_note_octave (str, optional): The note octave to update the
-                Note with
+            input_note_octave (int/str): The note octave to update the Note
+                with
 
         Raises:
             ValueError: If input_note_octave cannot be cast as an int
