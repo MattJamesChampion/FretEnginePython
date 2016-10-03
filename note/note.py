@@ -7,6 +7,10 @@ DEFAULT_NOTE_SHIFT_VALUE = "natural"
 """Default value intended for use when note shift is not specified."""
 DEFAULT_NOTE_OCTAVE_VALUE = 4
 """Default value intended for use when note octave is not specified."""
+OCTAVE_LOWER_BOUND = 0
+"""The lowest allowed octave value (inclusive)"""
+OCTAVE_UPPER_BOUND = 10
+"""The highest allowed octave value (inclusive)"""
 
 
 class AbstractNote(Enum):
@@ -139,11 +143,13 @@ class Note:
             # potential exception is clear.
             raise
 
-        if 0 <= input_note_octave <= 10:
+        if is_note_octave_valid(input_note_octave):
             self._note_octave = input_note_octave
         else:
-            raise ValueError("input_note_octave ({}) must be between 0 and "
-                             "10".format(input_note_octave))
+            raise ValueError("input_note_octave ({}) must be between {} and "
+                             "{}".format(input_note_octave,
+                                         OCTAVE_LOWER_BOUND,
+                                         OCTAVE_UPPER_BOUND))
 
 
 def parse_note_string(note_string):
@@ -267,11 +273,8 @@ def is_note_octave_valid(input_note_octave):
     Raises:
         TypeError: If input_note_octave is an invalid type
     """
-    octave_lower_bound = 0
-    octave_upper_bound = 10
-
     try:
-        return octave_lower_bound <= input_note_octave <= octave_upper_bound
+        return OCTAVE_LOWER_BOUND <= input_note_octave <= OCTAVE_UPPER_BOUND
     except TypeError:
         raise TypeError("input_note_octave ({}) must be an "
                         "integer".format(input_note_octave))
