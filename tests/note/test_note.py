@@ -77,9 +77,7 @@ class TestNote(unittest.TestCase):
         0,
         1,
         4,
-        10,
-        "5",
-        "7"
+        10
     )
 
     invalid_note_octave_values = (

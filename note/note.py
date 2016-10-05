@@ -135,23 +135,8 @@ class Note:
         """Set the stored note's octave.
 
         Args:
-            input_note_octave (int/str): The note octave to update the Note
-                with
-
-        Raises:
-            ValueError: If input_note_octave cannot be cast as an int
+            input_note_octave (int): The note octave to update the Note with
         """
-        try:
-            input_note_octave = int(input_note_octave)
-        except ValueError:
-            # The reason that this exception is caught and then immediately
-            # re-raised is because the contract of this function dictates that
-            # ValueError can be raised depending on the arguments used. As
-            # such, it seemed wise to make the fact that casting as an int can
-            # throw a ValueError explicit so that the location/cause of the
-            # potential exception is clear.
-            raise
-
         if is_note_octave_valid(input_note_octave):
             self._note_octave = input_note_octave
         else:
