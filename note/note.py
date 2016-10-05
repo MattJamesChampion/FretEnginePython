@@ -84,7 +84,7 @@ class Note:
 
     def __str__(self):
         """Return the string representation of Note."""
-        return self.note.name + str(self.note_octave)
+        return "{} {}".format(self.note.name, str(self.note_octave))
 
     def __eq__(self, other):
         """Return whether the Note is equal to the passed Note."""
