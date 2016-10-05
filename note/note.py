@@ -80,19 +80,26 @@ class Note:
             note_shift (str, optional): The note shift to create Note with
             note_octave (int, optional): The octave to create the note with
         """
-        self.set_note(note_letter, note_shift)
-        self.note_octave = note_octave
+        self.set_note(note_letter, note_shift, note_octave)
 
     def __str__(self):
         """Return the string representation of Note."""
         return self.note.name + str(self.note_octave)
+
+    def __eq__(self, other):
+        """Return whether the Note is equal to the passed Note."""
+        return self.note == other.note and \
+            self.note_octave == other.note_octave
 
     @property
     def note(self):
         """Return the stored note."""
         return self._note
 
-    def set_note(self, note_letter, note_shift=DEFAULT_NOTE_SHIFT_VALUE):
+    def set_note(self,
+                 note_letter,
+                 note_shift=DEFAULT_NOTE_SHIFT_VALUE,
+                 note_octave=DEFAULT_NOTE_OCTAVE_VALUE):
         """Set the stored note.
 
         Takes two values (note_letter and note_shift), converts them into an
@@ -111,9 +118,11 @@ class Note:
         Args:
             note_letter (str): The note letter to set the Note with
             note_shift (str, optional): The note shift to set the Note with
+            note_octave (int, optional): The note octave to set the Note with
         """
         self._note_letter = note_letter
         self._note_shift = note_shift
+        self.note_octave = note_octave
         self._note = convert_note_to_abstract(note_letter, note_shift)
 
     @property

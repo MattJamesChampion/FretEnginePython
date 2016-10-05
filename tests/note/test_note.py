@@ -263,13 +263,13 @@ class TestNote(unittest.TestCase):
 
     def test_set_note_updates_correctly(self):
         valid_note_arguments = (
-            (("A", "flat"), (AbstractNote.gsharp_aflat)),
-            (("b", "SHARP"), (AbstractNote.bsharp_cnatural)),
-            (("C", "NATURAL"), (AbstractNote.bsharp_cnatural)),
-            (("d", "fLaT"), (AbstractNote.csharp_dflat)),
-            (("E", "SHarP"), (AbstractNote.esharp_fnatural)),
-            (("f"), (AbstractNote.esharp_fnatural)),
-            (("G"), (AbstractNote.gnatural))
+            ("A", "flat", 0),
+            ("b", "SHARP", 10),
+            ("C", "NATURAL", 5),
+            ("d", "fLaT"),
+            ("E", "SHarP"),
+            ("f"),
+            ("G")
         )
 
         for note_arguments in valid_note_arguments:
@@ -278,11 +278,11 @@ class TestNote(unittest.TestCase):
                                  self.note_shift,
                                  self.note_octave)
 
-                set_note_inputs, intended_result = note_arguments
+                intended_result = Note(*note_arguments)
 
-                test_note.set_note(*set_note_inputs)
+                test_note.set_note(*note_arguments)
 
-                self.assertEqual(test_note.note, intended_result)
+                self.assertEqual(test_note, intended_result)
 
 
 class TestIsNoteLetterValid(unittest.TestCase):
