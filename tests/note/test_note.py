@@ -3,6 +3,7 @@ from note.note import (AbstractNote,
                        convert_note_to_abstract,
                        DEFAULT_NOTE_OCTAVE_VALUE,
                        DEFAULT_NOTE_SHIFT_VALUE,
+                       is_abstract_note_valid,
                        is_note_letter_valid,
                        is_note_shift_valid,
                        is_note_octave_valid,
@@ -281,6 +282,21 @@ class TestNote(unittest.TestCase):
                 test_note.set_note(*note_arguments)
 
                 self.assertEqual(test_note, intended_result)
+
+
+class TestIsAbstractNoteValid(unittest.TestCase):
+    valid_abstract_notes = AbstractNote
+    invalid_abstract_notes = BASIC_CHECK_NUMBERS + BASIC_CHECK_STRINGS
+
+    def test_returns_true_for_valid_abstract_note(self):
+        for valid_abstract_note in self.valid_abstract_notes:
+            with self.subTest(valid_abstract_note=valid_abstract_note):
+                self.assertTrue(is_abstract_note_valid(valid_abstract_note))
+
+    def test_returns_false_for_invalid_abstract_note(self):
+        for invalid_abstract_note in self.invalid_abstract_notes:
+            with self.subTest(invalid_abstract_note=invalid_abstract_note):
+                self.assertFalse(is_abstract_note_valid(invalid_abstract_note))
 
 
 class TestIsNoteLetterValid(unittest.TestCase):

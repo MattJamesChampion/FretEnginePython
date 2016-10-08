@@ -202,6 +202,19 @@ def parse_note_string(note_string):
                          "be parsed".format(note_string))
 
 
+def is_abstract_note_valid(input_abstract_note):
+    """Check that input_abstract_note is a valid AbstractNote.
+
+    Args:
+        input_abstract_note (AbstractNote): The AbstractNote that is being
+            checked
+
+    Returns:
+        bool: Whether input_abstract_note is a valid AbstractNote or not
+    """
+    return input_abstract_note in AbstractNote
+
+
 def is_note_letter_valid(input_note_letter):
     """Check that input_note_letter is a valid note letter.
 
