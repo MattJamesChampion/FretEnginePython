@@ -202,6 +202,27 @@ def parse_note_string(note_string):
                          "be parsed".format(note_string))
 
 
+def is_note_valid(input_note):
+    """Check that input_note is a valid Note.
+
+    Args:
+        input_note (Note): The Note that is being checked
+
+    Returns:
+        bool: Whether input_note is a valid Note or not
+    """
+    result = False
+
+    try:
+        result = is_note_letter_valid(input_note._note_letter) and \
+            is_note_shift_valid(input_note._note_shift) and \
+            is_note_octave_valid(input_note.note_octave)
+    except AttributeError:
+        result = False
+
+    return result
+
+
 def is_abstract_note_valid(input_abstract_note):
     """Check that input_abstract_note is a valid AbstractNote.
 

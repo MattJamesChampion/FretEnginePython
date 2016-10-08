@@ -3,6 +3,7 @@ from note.note import (AbstractNote,
                        convert_note_to_abstract,
                        DEFAULT_NOTE_OCTAVE_VALUE,
                        DEFAULT_NOTE_SHIFT_VALUE,
+                       is_note_valid,
                        is_abstract_note_valid,
                        is_note_letter_valid,
                        is_note_shift_valid,
@@ -282,6 +283,38 @@ class TestNote(unittest.TestCase):
                 test_note.set_note(*note_arguments)
 
                 self.assertEqual(test_note, intended_result)
+
+
+class TestIsNoteValid(unittest.TestCase):
+    valid_notes = (
+        Note("A"),
+        Note("b", "flat"),
+        Note("C", "SHARP"),
+        Note("d", note_octave=7),
+        Note("e", "natural", 9)
+    )
+
+    class InvalidNote:
+        def __init__(self, note_letter, note_shift, note_octave):
+            self.note_letter = note_letter
+            self.note_shift = note_shift
+            self.note_octave = note_octave
+
+    invalid_notes = (
+        InvalidNote("Z", DEFAULT_NOTE_SHIFT_VALUE, DEFAULT_NOTE_OCTAVE_VALUE),
+        InvalidNote("b", "abc", DEFAULT_NOTE_OCTAVE_VALUE),
+        InvalidNote("C", DEFAULT_NOTE_SHIFT_VALUE, 100)
+    )
+
+    def test_returns_true_for_valid_note(self):
+        for valid_note in self.valid_notes:
+            with self.subTest(valid_note=valid_note):
+                self.assertTrue(is_note_valid(valid_note))
+
+    def test_returns_false_for_invalid_note(self):
+        for invalid_note in self.invalid_notes:
+            with self.subTest(invalid_note=invalid_note):
+                self.assertFalse(is_note_valid(invalid_note))
 
 
 class TestIsAbstractNoteValid(unittest.TestCase):
