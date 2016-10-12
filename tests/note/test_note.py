@@ -155,7 +155,7 @@ class TestNote(unittest.TestCase):
             with self.subTest(args=(arguments, results)):
                 test_note = Note(*arguments)
 
-                self.assertEqual(test_note.note, results[0])
+                self.assertEqual(test_note.abstract_note, results[0])
                 self.assertEqual(test_note.note_octave, results[1])
 
     def test_init_raises_exception_with_invalid_note_letter_value(self):

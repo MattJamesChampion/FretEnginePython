@@ -84,17 +84,17 @@ class Note:
 
     def __str__(self):
         """Return the string representation of Note."""
-        return "{} {}".format(self.note.name, str(self.note_octave))
+        return "{} {}".format(self.abstract_note.name, str(self.note_octave))
 
     def __eq__(self, other):
         """Return whether the Note is equal to the passed Note."""
-        return self.note == other.note and \
+        return self.abstract_note == other.abstract_note and \
             self.note_octave == other.note_octave
 
     @property
-    def note(self):
-        """Return the stored note."""
-        return self._note
+    def abstract_note(self):
+        """Return the stored abstract_note."""
+        return self._abstract_note
 
     def set_note(self,
                  note_letter,
@@ -108,12 +108,12 @@ class Note:
         This also stores the note_letter and note_shift values internally in
         case they have any further use.
 
-        The reason that this function is not used as a setter for the "note"
-        property is that setters can only take in one value cleanly; in theory
-        a tuple or other such construct could be used to package the values on
-        one side and then unpack them once passed, but that only serves to
-        complicate the contract by requiring users to package their values
-        first.
+        The reason that this function is not used as a setter for the
+        "abstract_note" property is that setters can only take in one value
+        cleanly; in theory a tuple or other such construct could be used to
+        package the values on one side and then unpack them once passed, but
+        that only serves to complicate the contract by requiring users to
+        package their values first.
 
         Args:
             note_letter (str): The note letter to set the Note with
@@ -123,7 +123,7 @@ class Note:
         self._note_letter = note_letter
         self._note_shift = note_shift
         self.note_octave = note_octave
-        self._note = convert_note_to_abstract(note_letter, note_shift)
+        self._abstract_note = convert_note_to_abstract(note_letter, note_shift)
 
     @property
     def note_octave(self):
